@@ -1,0 +1,333 @@
+* {
+    padding: 0;
+    margin: 0;
+    font-family: sans-serif;
+}
+
+
+nav {
+    display: flex;
+    background-color: #2980b9;
+    padding: 20px;
+    font-weight: bold;
+    position: relative;
+    color: white;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+    position: absolute;
+    right: 20px;
+}
+
+nav ul li {
+    margin-left: 50px;
+}
+
+nav a {
+    text-decoration: none;
+    color: white;
+}
+
+.welcome-wrapper {
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("../images/landing.jpeg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 80vh;
+}
+
+.welcome {
+    width: fit-content;
+    margin: 0 auto 0 auto;
+    padding-top: 50px;
+}
+
+.welcome h1 {
+    font-size: 68px;
+    font-style: italic;
+    color: white;
+}
+
+.welcome .line {
+    width: 100px;
+    margin: 15px auto 20px auto;
+    height: 3.5px;
+    background-color: #2980b9;
+    border: none;
+}
+
+.welcome p {
+    color: white;
+    text-align: center;
+    font-size: 26px;
+}
+
+.welcome .get-started {
+    width: fit-content;
+    margin: 50px auto 0 auto;
+}
+
+.welcome .get-started a {
+    background-color: #2980b9;
+    padding: 20px;
+    border-radius: 16px;
+    color: white;
+    text-decoration: none;
+}
+
+.search-main {
+    display: flex;
+}
+
+.search-main aside {
+    background-color: #2980b9;
+    max-height: 660vh;
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.search-main aside .filters select {
+    width: 120px;
+    background-color: white;
+    padding: 5px;
+    outline: none;
+}
+
+.search-main aside button {
+    width: 120px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background-color: rgb(255, 170, 0);
+    border: none;
+    color: black;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.find {
+    width: 100%;
+}
+
+.find h1 {
+    margin-top: 30px;
+    font-size: 32px;
+    text-align: center;
+}
+
+.find .search-content {
+    display: flex;
+}
+
+.find .search-content .map-wrap {
+    padding: 20px;
+    height: 100vh;
+    width: 50%;
+}
+
+.find .search-content .tutors {
+    padding: 20px;
+    height: 100vh;
+    width: 50%;
+}
+
+.find .search-content .tutor {
+    display: flex;
+    margin-bottom: 20px;
+    /* background-color: rgb(146, 102, 187); */
+    /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); */
+    border: solid rgb(211, 211, 211) 1px;
+    padding: 10px;
+    width: 550px;
+    border-radius: 6px;
+}
+
+.find .search-content .tutor:hover {
+    box-shadow: 0 4px 40px 0 rgba(30, 206, 255, 0.2);
+    border: none;
+    cursor: pointer;
+}
+
+.find .search-content .tutor img {
+    margin-right: 20px;
+}
+
+.find .search-content .tutor h2 {
+    margin-bottom: 5px;
+}
+
+.find .search-content .tutor p {
+    margin-bottom: 3px;
+}
+
+.find .search-content .tutor button {
+    background-color: rgb(31, 151, 255);
+    border: none;
+    padding: 7px;
+    border-radius: 4px;
+    color: white;
+}
+
+select {
+    border-radius: 4px;
+}
+
+
+/* map style */
+#map { 
+    height: 380px;
+    max-width: 900px;
+    margin-top: 20px;
+    margin: auto auto;
+    z-index: 0;
+}
+
+#person-search-input {
+    z-index: 1;
+    margin-bottom: 20px;
+    width: calc(100% - 30px);
+    padding: 15px;
+    outline: none;
+}
+
+.custom-text-marker {
+    width: 500px; 
+}
+
+.tutor-class {
+    text-decoration: none;
+    color: black;
+}
+
+.profile-card {
+  width: 300px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  text-align: center;
+  margin: 50px auto 0 auto;
+}
+
+.profile-picture {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.profile-name {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.profile-description {
+  font-size: 16px;
+  color: #888888;
+  margin-bottom: 15px;
+}
+
+.profile-social-links {
+  display: flex;
+  justify-content: center;
+}
+
+.social-link {
+  font-size: 20px;
+  color: #333333;
+  margin: 0 5px;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.social-link:hover {
+  color: #007bff;
+}
+
+#connect {
+    padding: 10px;
+    background-color: rgb(146, 102, 187);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+}
+
+#request-sent {
+    padding: 10px;
+    background-color: rgb(146, 102, 187);
+    border: none;
+    border-radius: 6px;
+    color: white;
+}
+
+#cancel-request {
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+#popup-trigger {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    width: fit-content;
+    padding: 20px;
+    border-radius: 50%;
+    position: fixed;
+    right: 30px;
+    bottom: 30px;
+    cursor: pointer;
+    background-color: white;
+}
+
+
+.invites-container {
+    margin: 20px;
+    max-width: 800px;
+}
+
+.invite {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.invite-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+.card-name {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.accept-btn {
+    position: absolute;
+    right: 40px;
+}
+
+.accept-btn button {
+    padding: 7px 10px 7px 10px;
+    color: white;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+.accept-btn button:nth-child(1) {
+    background-color: rgb(146, 102, 187);
+}
+
+.accept-btn button:nth-child(2) {
+    color: black;
+}
+
