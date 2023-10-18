@@ -12,7 +12,7 @@ function updateAlert($query)
             text: "Information has been successfully updated",
             icon: "success",
          }).then(function () {
-            window.location = "http://localhost/tutor/index.php?id=" . $username;
+            window.location = "http://localhost/tutor/index.php?id=".$username;
          });
 
       </script>
@@ -25,7 +25,7 @@ function updateAlert($query)
 function paymentAlert($query)
 {
    $username = $_SESSION['username'];
-   
+
    if ($query) {
       ?>
       <script>
@@ -202,6 +202,8 @@ function registerStudent($conn)
    $userType = "Student";
    $verifiedStatus = "Not Verified";
 
+   $studentID = mt_rand(1000000, 9999999);
+   $grade = $_POST['grade'];
 
    $image = $_FILES['image']['name'];
    $image_size = $_FILES['image']['size'];
@@ -209,7 +211,7 @@ function registerStudent($conn)
    $image_folder = 'uploaded_img/' . $image;
 
    $encpass = password_hash($pass, PASSWORD_BCRYPT);
-   
+
 
    $uppercase = !preg_match('@[A-Z]@', $pass);
    $lowercase = !preg_match('@[a-z]@', $pass);
@@ -245,163 +247,176 @@ function registerStudent($conn)
       header("location: student_register.php?error=$error");
       die();
    } else {
-      $insert = ("INSERT INTO users (username, password,firstName, lastName, dateOfBirth , email,image, verifiedStatus, userType) 
+      $insertUser = ("INSERT INTO users (username, password,firstName, lastName, dateOfBirth , email,image, verifiedStatus, userType) 
       values('$username','$encpass','$firstname','$lastname', '$DOB', '$email' , '$image' , '$verifiedStatus' , '$userType')") or die('query failed');
-      $query = mysqli_query($conn, $insert);
 
-      if ($query) {
-         move_uploaded_file($image_tmp_name, $image_folder);
+      $query = mysqli_query($conn, $insertUser);
 
-         insertAlert($query);
+      if ($query == 1) {
+
+         foreach ($grade as $gradeList) {
+
+            $insertStudent = "INSERT INTO student (studentID, username,gradeID) 
+            values('$studentID','$username','$gradeList')";
+
+            $query = mysqli_query($conn, $insertStudent);
+
+         }
+
+         if ($query == 1) {
+            move_uploaded_file($image_tmp_name, $image_folder);
+            insertAlert($query);
+            die();
+         }
       }
+   
+
    }
-}
-/*STUDENT_REGISTER END*/
+   /*STUDENT_REGISTER END*/
 
-/*TUTOR REGISTER START*/
-function registerTutor($conn)
-{
-   $username = mysqli_real_escape_string($conn, $_POST['username']);
-   $pass = mysqli_real_escape_string($conn, $_POST['password']);
-   $cpass = mysqli_real_escape_string($conn, $_POST['cpassword']);
-   $firstname = mysqli_real_escape_string($conn, $_POST['firstname']);
-   $lastname = mysqli_real_escape_string($conn, $_POST['lastname']);
-   $DOB = mysqli_real_escape_string($conn, $_POST['dob']);
-   $email = mysqli_real_escape_string($conn, $_POST['email']);
-   $phoneNo = mysqli_real_escape_string($conn, $_POST['phoneNo']);
-   $streetNumber = mysqli_real_escape_string($conn, $_POST['streetNo']);
-   $streetName = mysqli_real_escape_string($conn, $_POST['streetName']);
-   $region = mysqli_real_escape_string($conn, $_POST['region']);
-   $town = mysqli_real_escape_string($conn, $_POST['town']);
-   $city = mysqli_real_escape_string($conn, $_POST['city']);
-   $postalCode = mysqli_real_escape_string($conn, $_POST['postal']);
-   /*$overallRating = 0.0;*/
-   $hourlyRate = mysqli_real_escape_string($conn, $_POST['hourlyRate']);
-   $yearsOfExperience = mysqli_real_escape_string($conn, $_POST['teachingExperience']);
-   $userType = "Tutor";
-   $verifiedStatus = "Not Verified";
-   $isVerified = "Not Verified";
+   /*TUTOR REGISTER START*/
+   function registerTutor($conn)
+   {
+      $username = mysqli_real_escape_string($conn, $_POST['username']);
+      $pass = mysqli_real_escape_string($conn, $_POST['password']);
+      $cpass = mysqli_real_escape_string($conn, $_POST['cpassword']);
+      $firstname = mysqli_real_escape_string($conn, $_POST['firstname']);
+      $lastname = mysqli_real_escape_string($conn, $_POST['lastname']);
+      $DOB = mysqli_real_escape_string($conn, $_POST['dob']);
+      $email = mysqli_real_escape_string($conn, $_POST['email']);
+      $phoneNo = mysqli_real_escape_string($conn, $_POST['phoneNo']);
+      $streetNumber = mysqli_real_escape_string($conn, $_POST['streetNo']);
+      $streetName = mysqli_real_escape_string($conn, $_POST['streetName']);
+      $region = mysqli_real_escape_string($conn, $_POST['region']);
+      $town = mysqli_real_escape_string($conn, $_POST['town']);
+      $city = mysqli_real_escape_string($conn, $_POST['city']);
+      $postalCode = mysqli_real_escape_string($conn, $_POST['postal']);
+      /*$overallRating = 0.0;*/
+      $hourlyRate = mysqli_real_escape_string($conn, $_POST['hourlyRate']);
+      $yearsOfExperience = mysqli_real_escape_string($conn, $_POST['teachingExperience']);
+      $userType = "Tutor";
+      $verifiedStatus = "Not Verified";
+      $isVerified = "Not Verified";
 
-   $subjects = $_POST['subjects'];
+      $subjects = $_POST['subjects'];
 
-   $image = $_FILES['image']['name'];
-   $image_size = $_FILES['image']['size'];
-   $image_tmp_name = $_FILES['image']['tmp_name'];
-   $image_folder = 'uploaded_img/' . $image;
+      $image = $_FILES['image']['name'];
+      $image_size = $_FILES['image']['size'];
+      $image_tmp_name = $_FILES['image']['tmp_name'];
+      $image_folder = 'uploaded_img/' . $image;
 
-   $document = $_FILES['filename']['name'];
-   $document_size = $_FILES['filename']['size'];
-   $document_tmp_name = $_FILES['filename']['tmp_name'];
-   $document_folder = 'uploaded_document/' . $document;
+      $document = $_FILES['filename']['name'];
+      $document_size = $_FILES['filename']['size'];
+      $document_tmp_name = $_FILES['filename']['tmp_name'];
+      $document_folder = 'uploaded_document/' . $document;
 
-   $encpass = password_hash($pass, PASSWORD_BCRYPT);
-   $tutorID = mt_rand(1000000, 9999999);
-   $addressID = mt_rand(1000000, 9999999);
+      $encpass = password_hash($pass, PASSWORD_BCRYPT);
+      $tutorID = mt_rand(1000000, 9999999);
+      $addressID = mt_rand(1000000, 9999999);
 
-   $uppercase = !preg_match('@[A-Z]@', $pass);
-   $lowercase = !preg_match('@[a-z]@', $pass);
-   $number = !preg_match('@[0-9]@', $pass);
-   $specialChars = !preg_match('@[^\w]@', $pass);
-   $whiteSpaces = preg_match("/\s/", $pass);
-   $select = mysqli_query($conn, "SELECT * FROM `users` WHERE email = '$email' AND password = '$pass'") or die('query failed');
+      $uppercase = !preg_match('@[A-Z]@', $pass);
+      $lowercase = !preg_match('@[a-z]@', $pass);
+      $number = !preg_match('@[0-9]@', $pass);
+      $specialChars = !preg_match('@[^\w]@', $pass);
+      $whiteSpaces = preg_match("/\s/", $pass);
+      $select = mysqli_query($conn, "SELECT * FROM `users` WHERE email = '$email' AND password = '$pass'") or die('query failed');
 
-   /*$select = mysqli_query($conn, "SELECT * FROM `users`,`tutor` WHERE users.userID = tutor.userID") or die('query failed');*/
-
-   if (mysqli_num_rows($select) > 0) {
-      $error = 'user already exist';
-      header("location: tutor_register.php?error=$error");
-      die();
-   } elseif ($pass != $cpass) {
-      $error = 'confirm password not matched!';
-      header("location: tutor_register.php?error=$error");
-      die();
       
 
-   } elseif (strlen($pass) < 8 || $uppercase || $lowercase || $number || $specialChars || $whiteSpaces) {
-      $error = "Invalid Password";
-      header("location: tutor_register.php?error=$error");
-      die();
+      if (mysqli_num_rows($select) > 0) {
+         $error = 'user already exist';
+         header("location: tutor_register.php?error=$error");
+         die();
+      } elseif ($pass != $cpass) {
+         $error = 'confirm password not matched!';
+         header("location: tutor_register.php?error=$error");
+         die();
 
-   } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-      $error = 'Invalid email';
-      header("location: tutor_register.php?error=$error");
-      die();
-   } elseif ($image_size > 2000000) {
-      $error = 'image size is too large!';
-      header("location: tutor_register.php?error=$error");
-      die();
-   } elseif ($document_size > 5000000) {
-      $error = 'document size is too large!';
-      header("location: tutor_register.php?error=$error");
-      die();
-   } elseif (!preg_match("/^[a-zA-Z-' ]*$/", $firstname) || (!preg_match("/^[a-zA-Z-' ]*$/", $lastname))) {
-      $error = "Invalid field format";
-      header("location: tutor_register.php?error=$error");
-      die();
-   }elseif (strlen($phoneNo) < 10 || strlen($phoneNo) > 10 ) {
-      $error = "Invalid phone number format";
-      header("location: tutor_register.php?error=$error");
-      die();
-   } 
-   
-   
-   else {
 
-      $sqlUsers = "INSERT INTO users (username, password,firstName, lastName, dateOfBirth , email,image, verifiedStatus, userType) 
+      } elseif (strlen($pass) < 8 || $uppercase || $lowercase || $number || $specialChars || $whiteSpaces) {
+         $error = "Invalid Password";
+         header("location: tutor_register.php?error=$error");
+         die();
+
+      } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+         $error = 'Invalid email';
+         header("location: tutor_register.php?error=$error");
+         die();
+      } elseif ($image_size > 2000000) {
+         $error = 'image size is too large!';
+         header("location: tutor_register.php?error=$error");
+         die();
+      } elseif ($document_size > 5000000) {
+         $error = 'document size is too large!';
+         header("location: tutor_register.php?error=$error");
+         die();
+      } elseif (!preg_match("/^[a-zA-Z-' ]*$/", $firstname) || (!preg_match("/^[a-zA-Z-' ]*$/", $lastname))) {
+         $error = "Invalid field format";
+         header("location: tutor_register.php?error=$error");
+         die();
+      } elseif (strlen($phoneNo) < 10 || strlen($phoneNo) > 10) {
+         $error = "Invalid phone number format";
+         header("location: tutor_register.php?error=$error");
+         die();
+      } else {
+
+         $sqlUsers = "INSERT INTO users (username, password,firstName, lastName, dateOfBirth , email,image, verifiedStatus, userType) 
       values('$username','$encpass','$firstname','$lastname', '$DOB', '$email' , '$image' , '$verifiedStatus' , '$userType')";
 
-      $sqlTutor = "INSERT INTO tutor (tutorID, username, phoneNumber , yearsOfExperience, hourlyRate, qualification, isVerified) 
+         $sqlTutor = "INSERT INTO tutor (tutorID, username, phoneNumber , yearsOfExperience, hourlyRate, qualification, isVerified) 
       values('$tutorID','$username','$phoneNo','$yearsOfExperience' ,'$hourlyRate', '$document' , '$isVerified')";
 
-      $sqlAddress = "INSERT INTO address(addressID,username, streetNumber,streetName, region , town , city, postalCode)
+         $sqlAddress = "INSERT INTO address(addressID,username, streetNumber,streetName, region , town , city, postalCode)
 values('$addressID','$username','$streetNumber','$streetName','$region' , '$town' , '$city', '$postalCode')";
 
 
 
 
-      $query = mysqli_query($conn, $sqlUsers);
-
-      if ($query == 1) {
-         $query = mysqli_query($conn, $sqlTutor);
-
+         $query = mysqli_query($conn, $sqlUsers);
 
          if ($query == 1) {
-            $query = mysqli_query($conn, $sqlAddress);
+            $query = mysqli_query($conn, $sqlTutor);
+
 
             if ($query == 1) {
-
-               foreach ($subjects as $subjectList) {
-
-                  $sqlSubject = "INSERT INTO assign_subject_tutor (username,subject_id) 
-            values('$username','$subjectList')";
-
-                  $query = mysqli_query($conn, $sqlSubject);
-
-               }
+               $query = mysqli_query($conn, $sqlAddress);
 
                if ($query == 1) {
-                  move_uploaded_file($image_tmp_name, $image_folder);
-                  move_uploaded_file($document_tmp_name, $document_folder);
-                  insertTutorAlert();
-                  die();
+
+                  foreach ($subjects as $subjectList) {
+
+                     $sqlSubject = "INSERT INTO assign_subject_tutor (username,subject_id) 
+                     values('$username','$subjectList')";
+
+                     $query = mysqli_query($conn, $sqlSubject);
+
+                  }
+
+                  if ($query == 1) {
+                     move_uploaded_file($image_tmp_name, $image_folder);
+                     move_uploaded_file($document_tmp_name, $document_folder);
+                     insertTutorAlert();
+                     die();
+                  }
                }
             }
          }
       }
    }
-}
 
-function makePayment($amount, $conn) {
+   function makePayment($amount, $conn)
+   {
 
-   $username = $_SESSION['username'];
-   $fee = 452.90;
+      $username = $_SESSION['username'];
+      $fee = 452.90;
 
-   $sql = "INSERT INTO payment(tutorUsername, amount, fee) VALUES('$username', '$amount', '$fee')";
-   $query = mysqli_query($conn, $sql);
-   
-   if (!$query) {
-      echo 'error occurred while adding to connections ';
-   } else {
-      paymentAlert($query);
+      $sql = "INSERT INTO payment(tutorUsername, amount, fee) VALUES('$username', '$amount', '$fee')";
+      $query = mysqli_query($conn, $sql);
+
+      if (!$query) {
+         echo 'error occurred while adding to connections ';
+      } else {
+         paymentAlert($query);
+      }
    }
 }

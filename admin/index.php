@@ -46,7 +46,7 @@ include 'inc_functions.php';
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
                 <div class="sidebar-brand-icon rotate-n-15">
-                    <i class="fas fa-laugh-wink"></i>
+                    <i class="fas fa-book"></i>
                 </div>
                 <div class="sidebar-brand-text mx-3">Knowledge Knights</div>
             </a>
@@ -108,20 +108,6 @@ include 'inc_functions.php';
                         <i class="fa fa-bars"></i>
                     </button>
 
-                    <!-- Topbar Search -->
-                    <form
-                        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-                        <div class="input-group">
-                            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
-                                aria-label="Search" aria-describedby="basic-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-primary" type="button">
-                                    <i class="fas fa-search fa-sm"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
 
@@ -182,11 +168,117 @@ include 'inc_functions.php';
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
 
-                    <!-- Page Heading -->
-                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                        <h1 class="h3 mb-0 text-gray-800">Tutor Data</h1>
-                        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Student Data</h6>
+
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Username</th>
+                                            <th>First Name</th>
+                                            <th>Last Name</th>
+                                            <th>DOB</th>
+                                            <th>Image</th>
+                                            <th>Email</th>
+                                            <th>Grade</th>
+                                            <th>Action</th>
+
+                                        </tr>
+                                    </thead>
+
+                                    
+                                    <tbody>
+
+                                        <?php
+                                      $query = "SELECT
+                                      users.username,
+                                      users.firstName,
+                                      users.lastName,
+                                      users.dateOfBirth,
+                                      users.image,
+                                      users.email,
+                                      grade.grade
+                                      
+                                      
+                                      FROM
+                                      users 
+                                      INNER JOIN
+                                      student ON users.username = student.username
+                                      LEFT JOIN
+                                      grade ON student.gradeID = grade.gradeID ";
+
+
+                                        $result = $conn->query($query);
+
+
+                                        if (!$result) {
+                                            die("Query failed: " . $conn->error);
+                                        }
+                                        ?>
+                                        <?php
+
+                                        if ($result) {
+                                            foreach ($result as $row) {
+
+                                                ?>
+                                                <tr>
+                                                <td>
+                                                        <?= $row["username"] ?>
+                                                    </td>
+
+                                                    <td>
+                                                        <?= $row['firstName'] ?>
+                                                    </td>
+
+                                                    <td>
+                                                        <?= $row['lastName'] ?>
+                                                    </td>
+
+                                                    <td>
+                                                        <?= $row['dateOfBirth'] ?>
+                                                    </td>
+
+                                                    <td>
+                                                        <?= $row['image'] ?>
+                                                    </td>
+
+                                                    <td>
+                                                        <?= $row["email"] ?>
+                                                    </td>
+
+                                                     <td>
+                                                        <?= $row["grade"] ?>
+                                                    </td>
+
+
+
+
+                                                    <td>
+                                                        <a href="#editModal_<?= $row["username"] ?>"
+                                                            class="btn btn-primary btn-sm" data-bs-toggle="modal">Edit
+                                                        </a>
+
+                                                        <a href="#deleteModal_<?= $row["username"] ?>"
+                                                            class="btn btn-danger btn-sm" data-bs-toggle="modal">Delete</a>
+                                                            
+                                                    </td>
+                                                    <?php include("modals/editStudentModal.php"); ?>
+                                                    <?php include("modals/deleteModal.php"); ?>
+                                                </tr>
+                                                <?php
+                                            }
+                                        }
+
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
                     </div>
 
                     <div class="card shadow mb-4">
@@ -219,29 +311,7 @@ include 'inc_functions.php';
                                             <th>Accept/Reject</th>
                                         </tr>
                                     </thead>
-                                    <!-- <tfoot>
-                                        <tr>
-                                            <th>Username</th>
-                                            <th>First Name</th>
-                                            <th>Last Name</th>
-                                            <th>DOB</th>
-                                            <th>Image</th>
-                                            <th>Email</th>
-                                            <th>Phone Number</th>
-                                            <th>Qualification</th>
-                                            <th>Is Verified</th>
-                                            <th>Hourly Rate</th>
-                                            <th>Years Of Experience</th>
-                                            <th>StreetNumber</th>
-                                            <th>Street Name</th>
-                                            <th>Region</th>
-                                            <th>Town</th>
-                                            <th>City</th>
-                                            <th>Postal Code</th>
-                                            <th>Action</th>
-                                            <th>Accept/Reject</th>
-                                        </tr>
-                                    </tfoot>-->
+
                                     <tbody>
 
                                         <?php
@@ -315,7 +385,10 @@ include 'inc_functions.php';
                                                     </td>
 
                                                     <td>
-                                                        <a href="http://localhost/tutor/login/uploaded_document/<?= $row["qualification"] ?>" title="Download document" download><?= $row["qualification"] ?></a>
+                                                        <a href="http://localhost/tutor/login/uploaded_document/<?= $row["qualification"] ?>"
+                                                            title="Download document" download>
+                                                            <?= $row["qualification"] ?>
+                                                        </a>
                                                     </td>
 
                                                     <td>
@@ -367,18 +440,18 @@ include 'inc_functions.php';
                                                     </td>
 
                                                     <td>
-                                                       
 
 
-                                                        <a  href="#acceptModal_<?= $row["username"] ?>"
-                                                                class="btn btn-success btn-sm " data-bs-toggle="modal">Accept
-                                                         </a>
-                                                       
-                                                         <a  href="#rejectModal_<?= $row["username"] ?>"
-                                                                class="btn btn-danger btn-sm " data-bs-toggle="modal">Reject
-                                                         </a>
 
-                                                        
+                                                        <a href="#acceptModal_<?= $row["username"] ?>"
+                                                            class="btn btn-success btn-sm " data-bs-toggle="modal">Accept
+                                                        </a>
+
+                                                        <a href="#rejectModal_<?= $row["username"] ?>"
+                                                            class="btn btn-danger btn-sm " data-bs-toggle="modal">Reject
+                                                        </a>
+
+
                                                     </td>
                                                     <?php include("modals/editTutorModal.php"); ?>
                                                     <?php include("modals/deleteModal.php"); ?>
@@ -388,19 +461,14 @@ include 'inc_functions.php';
                                                 <?php
                                             }
                                         }
-
                                         ?>
-
-
-
-
                                     </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
 
-                    <h1 class="h3 mb-0 text-gray-800">Admin Data</h1>
+
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
                             <h6 class="m-0 font-weight-bold text-primary">Admin Data</h6>
@@ -505,6 +573,7 @@ include 'inc_functions.php';
                             </div>
                         </div>
 
+
                     </div>
 
                     <!-- /.container-fluid -->
@@ -588,9 +657,10 @@ if (isset($_POST['addAdmin'])) {
 
 }
 
-if (isset($_POST['deleteAdmin'])) {
+if (isset($_POST['delete'])) {
     deleteAdmin($conn);
     deleteTutor($conn);
+    deleteStudent($conn);
 
 }
 
@@ -601,6 +671,16 @@ if (isset($_POST['updateTutor'])) {
     updateTutorUploadFiles($conn);
 
     updateTutorPassword($conn);
+
+
+}
+
+if (isset($_POST['updateStudent'])) {
+    updateStudentDetails($conn);
+
+    updateStudentProfileImage($conn);
+
+    updateStudentPassword($conn);
 
 
 }
