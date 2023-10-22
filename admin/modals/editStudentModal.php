@@ -1,4 +1,3 @@
-
 <div class="modal fade" id="editModal_<?= $row["username"] ?>" tabindex="-1" role="dialog"
     aria-labelledby="editModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -14,7 +13,7 @@
                 <form action="" method="post" enctype="multipart/form-data">
 
                     <?php
-                    
+
                     if (isset($_GET['msg'])) { ?>
                         <p class="success-message">
                             <?php echo $_GET['msg']; ?>
@@ -59,26 +58,10 @@
                     <div class="form-group">
                         <label>Grade</label>
                         <select class="form-control" name="grade" id="grade">
-                        
                             <?php
-                            
-                            $query = "SELECT * FROM grade";
-                            $query_run = mysqli_query($conn, $query);
-
-                            if (mysqli_num_rows($query_run) > 0) {
-                                foreach ($query_run as $row) {
-                                    ?>
-                                    <option value="<?= $row['gradeID']; ?>">
-                                        <?= $row['grade']; ?>
-                                    </option>
-                                    <?php
-                                }
-                            } 
+                            selectGrade($conn);
                             ?>
-
                         </select>
-
-                      
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>

@@ -1,6 +1,6 @@
 <?php
 
-require_once('../includes/config.php');
+require_once('config.php');
 include '../inc_functions.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -17,7 +17,7 @@ if (isset($_POST['acceptApplication'])) {
     $row = mysqli_fetch_assoc($select);
 
 
-    $url = "http://localhost/tutor/pricing/index.php";
+    $url = "http://localhost/Projects/knowledgeknights/pricing/index.php";
 
     $mail = new PHPMailer(true);
 
@@ -64,9 +64,11 @@ if (isset($_POST['acceptApplication'])) {
                     $_SESSION['username'] = $row['username'];
                     $_SESSION['email'] = $row['email'];
                     $_SESSION['userType'] = $row['userType'];
-                    applicationAcceptedAlert($query);
-                }
 
+                    applicationAcceptedAlert($query);
+                   
+                }
+                
                 /*$msg = "Your application has been approved. Please continue with the payment process. $email";
                 header("location: ../login.php?msg=$msg");
                 die();*/

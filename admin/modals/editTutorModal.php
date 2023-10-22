@@ -134,7 +134,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="phoneNo">Highest Qualification</label>
+                        <label for="qualification">Highest Qualification</label>
                         <input type="file" value="<?= $row['qualification'] ?>" class="form-control" name="qualification" accept="image/jpg, image/jpeg, image/png">
                     </div>
 

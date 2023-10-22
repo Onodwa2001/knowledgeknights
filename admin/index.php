@@ -3,6 +3,10 @@ ob_start();
 include 'includes/config.php';
 include 'inc_functions.php';
 
+session_start();
+$username = $_SESSION['username'];
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -64,17 +68,12 @@ include 'inc_functions.php';
             <!-- Divider -->
             <hr class="sidebar-divider">
 
-            <!-- Heading -->
-            <div class="sidebar-heading">
-                Features
-            </div>
-
             <!-- Nav Item - Pages Collapse Menu -->
             <li class="nav-item">
-                <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
-                    aria-expanded="true" aria-controls="collapseTwo">
-                    <i class="fas fa-fw fa-cog"></i>
-                    <span>CRUD</span>
+                <a class="nav-link collapsed" href="../login/login.php" data-toggle="collapse"
+                    data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
                 </a>
             </li>
 
@@ -137,13 +136,37 @@ include 'inc_functions.php';
 
                         <div class="topbar-divider d-none d-sm-block"></div>
 
+
+                        <?php
+                        include 'includes/config.php';
+                        $select = mysqli_query($conn, "SELECT * FROM `users` WHERE username = '$username'") or die('query failed');
+                        if (mysqli_num_rows($select) > 0) {
+                            $fetch = mysqli_fetch_assoc($select);
+                        }
+                        ?>
+
+
+                        <?php
+                        if ($fetch['image'] == '') {
+                            echo '<img src="images/default-avatar.png">';
+                        } else {
+                            echo '<img src="uploaded_img/' . $fetch['image'] . '">';
+                        }
+                        ?>
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                            <!-- <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">Douglas McGee</span>
-                                <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
-                            </a>
+                               
+                                
+                            </a> -->
+                            
+                            <span class="mr-2 d-none d-lg-inline text-gray-600 small">
+                            <img src=" <?php echo $fetch['image']; ?>" alt="">
+                                <?php echo $fetch['firstName']; ?>
+                            </span>
+
+
                             <!-- Dropdown - User Information -->
                             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                 aria-labelledby="userDropdown">
@@ -190,11 +213,11 @@ include 'inc_functions.php';
                                         </tr>
                                     </thead>
 
-                                    
+
                                     <tbody>
 
                                         <?php
-                                      $query = "SELECT
+                                        $query = "SELECT
                                       users.username,
                                       users.firstName,
                                       users.lastName,
@@ -226,7 +249,7 @@ include 'inc_functions.php';
 
                                                 ?>
                                                 <tr>
-                                                <td>
+                                                    <td>
                                                         <?= $row["username"] ?>
                                                     </td>
 
@@ -250,7 +273,7 @@ include 'inc_functions.php';
                                                         <?= $row["email"] ?>
                                                     </td>
 
-                                                     <td>
+                                                    <td>
                                                         <?= $row["grade"] ?>
                                                     </td>
 
@@ -264,7 +287,7 @@ include 'inc_functions.php';
 
                                                         <a href="#deleteModal_<?= $row["username"] ?>"
                                                             class="btn btn-danger btn-sm" data-bs-toggle="modal">Delete</a>
-                                                            
+
                                                     </td>
                                                     <?php include("modals/editStudentModal.php"); ?>
                                                     <?php include("modals/deleteModal.php"); ?>
@@ -287,6 +310,8 @@ include 'inc_functions.php';
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
+
+                            <div class="row"><div class="col-sm-12 col-md-6"><div class="dataTables_length" id="dataTable_length"><label>Show <select name="dataTable_length" aria-controls="dataTable" class="custom-select custom-select-sm form-control form-control-sm" fdprocessedid="523ei"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries</label></div></div><div class="col-sm-12 col-md-6"><div id="dataTable_filter" class="dataTables_filter"><label>Search:<input type="search" class="form-control form-control-sm" placeholder="" aria-controls="dataTable"></label></div></div></div>
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
@@ -340,7 +365,8 @@ include 'inc_functions.php';
                                                 tutor ON users.username = tutor.username
 
                                                 LEFT JOIN
-                                                address ON users.username = address.username ";
+                                                address ON users.username = address.username "
+                                        ;
 
                                         $result = $conn->query($query);
 
@@ -385,7 +411,7 @@ include 'inc_functions.php';
                                                     </td>
 
                                                     <td>
-                                                        <a href="http://localhost/tutor/login/uploaded_document/<?= $row["qualification"] ?>"
+                                                        <a href="http://localhost/Projects/knowledgeknights/login/uploaded_document/<?= $row["qualification"] ?>"
                                                             title="Download document" download>
                                                             <?= $row["qualification"] ?>
                                                         </a>
@@ -429,8 +455,7 @@ include 'inc_functions.php';
                                                     <td>
                                                         <?= $row["postalCode"] ?>
                                                     </td>
-
-                                                    <td>
+                                                    <td >
                                                         <a href="#editModal_<?= $row["username"] ?>"
                                                             class="btn btn-primary btn-sm" data-bs-toggle="modal">Edit
                                                         </a>
@@ -439,9 +464,7 @@ include 'inc_functions.php';
                                                             class="btn btn-danger btn-sm" data-bs-toggle="modal">Delete</a>
                                                     </td>
 
-                                                    <td>
-
-
+                                                    <td >
 
                                                         <a href="#acceptModal_<?= $row["username"] ?>"
                                                             class="btn btn-success btn-sm " data-bs-toggle="modal">Accept
@@ -464,6 +487,8 @@ include 'inc_functions.php';
                                         ?>
                                     </tbody>
                                 </table>
+
+                                <div class="row"><div class="col-sm-12 col-md-5"><div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Showing 1 to 1 of 1 entries</div></div><div class="col-sm-12 col-md-7"><div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate"><ul class="pagination"><li class="paginate_button page-item previous disabled" id="dataTable_previous"><a href="#" aria-controls="dataTable" data-dt-idx="0" tabindex="0" class="page-link">Previous</a></li><li class="paginate_button page-item active"><a href="#" aria-controls="dataTable" data-dt-idx="1" tabindex="0" class="page-link">1</a></li><li class="paginate_button page-item next disabled" id="dataTable_next"><a href="#" aria-controls="dataTable" data-dt-idx="2" tabindex="0" class="page-link">Next</a></li></ul></div></div></div>
                             </div>
                         </div>
                     </div>
@@ -479,6 +504,8 @@ include 'inc_functions.php';
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
+                            <div class="row"><div class="col-sm-12 col-md-6"><div class="dataTables_length" id="dataTable_length"><label>Show <select name="dataTable_length" aria-controls="dataTable" class="custom-select custom-select-sm form-control form-control-sm" fdprocessedid="woti2gb"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries</label></div></div><div class="col-sm-12 col-md-6"><div id="dataTable_filter" class="dataTables_filter"><label>Search:<input type="search" class="form-control form-control-sm" placeholder="" aria-controls="dataTable"></label></div></div></div>
+                            
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
@@ -570,6 +597,7 @@ include 'inc_functions.php';
                                         ?>
                                     </tbody>
                                 </table>
+                                <div class="row"><div class="col-sm-12 col-md-5"><div class="dataTables_info" id="dataTable_info" role="status" aria-live="polite">Showing 1 to 1 of 1 entries</div></div><div class="col-sm-12 col-md-7"><div class="dataTables_paginate paging_simple_numbers" id="dataTable_paginate"><ul class="pagination"><li class="paginate_button page-item previous disabled" id="dataTable_previous"><a href="#" aria-controls="dataTable" data-dt-idx="0" tabindex="0" class="page-link">Previous</a></li><li class="paginate_button page-item active"><a href="#" aria-controls="dataTable" data-dt-idx="1" tabindex="0" class="page-link">1</a></li><li class="paginate_button page-item next disabled" id="dataTable_next"><a href="#" aria-controls="dataTable" data-dt-idx="2" tabindex="0" class="page-link">Next</a></li></ul></div></div></div>
                             </div>
                         </div>
 
@@ -585,7 +613,7 @@ include 'inc_functions.php';
                 <footer class="sticky-footer bg-white">
                     <div class="container my-auto">
                         <div class="copyright text-center my-auto">
-                            <span>Copyright &copy; Your Website 2021</span>
+                            <span>Copyright &copy; Knowledge Knights 2023</span>
                         </div>
                     </div>
                 </footer>
@@ -603,7 +631,7 @@ include 'inc_functions.php';
         </a>
 
         <!-- Logout Modal-->
-        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        <!-- <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -620,7 +648,7 @@ include 'inc_functions.php';
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- Bootstrap core JavaScript-->
         <script src="vendor/jquery/jquery.min.js"></script>
@@ -684,7 +712,15 @@ if (isset($_POST['updateStudent'])) {
 
 
 }
+// if (isset($_POST['updateStudent'])) {
+//     updateStudentDetails($conn);
 
+//     updateStudentProfileImage($conn);
+
+//     updateStudentPassword($conn);
+
+
+// }
 
 if (isset($_POST['updateAdmin'])) {
     updateAdminDetails($conn);

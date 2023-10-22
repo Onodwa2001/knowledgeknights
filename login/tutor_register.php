@@ -143,7 +143,7 @@ include 'inc_functions.php';
          </div>
 
 
-         <input type="submit" name="submit" onClick = "remove-message()" value="register now" class="btn">
+         <input type="submit" name="submit" value="register now" class="btn">
          <p>already have an account? <a href="login.php">login now</a></p>
       </form>
 
@@ -162,3 +162,4 @@ include 'inc_functions.php';
 if (isset($_POST['submit'])) {
    registerTutor($conn);
 }
+?>

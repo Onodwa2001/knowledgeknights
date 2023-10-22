@@ -15,8 +15,6 @@ include 'includes/config.php';
    <!-- custom css file link  -->
    <link rel="stylesheet" href="css/style.css">
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
-
-
 </head>
 
 <body>
@@ -26,17 +24,22 @@ include 'includes/config.php';
       <form action="includes/verify.php" method="post" enctype="multipart/form-data">
          <h3>login now</h3>
          <?php
-            if (isset($_GET['msg'])) { ?>
-                <p class="success-message"><?php echo $_GET['msg']; ?></p>
+         if (isset($_GET['msg'])) { ?>
+            <p class="success-message">
+               <?php echo $_GET['msg']; ?>
+            </p>
             <?php
-            }
-            ?>
+         }
+         ?>
+         <?php
+         if (isset($_GET['error'])) { ?>
+            <p class="error-message">
+               <?php echo $_GET['error']; ?>
+            </p>
             <?php
-            if (isset($_GET['error'])) { ?>
-                <p class="error-message"><?php echo $_GET['error']; ?></p>
-            <?php
-            }
-            ?>
+         }
+         ?>
+
          <input type="email" name="email" placeholder="enter email" class="box" required>
 
          <div class="password-container">
@@ -45,16 +48,18 @@ include 'includes/config.php';
 
          </div>
 
-         <p style="text-align:left; font-size: 16px; margin-top: 0px;"><a href="password_assistance.php">Forgot password?</a></p>
+         <p style="text-align:left; font-size: 16px; margin-top: 0px;"><a href="password_assistance.php">Forgot
+               password?</a></p>
          <input type="submit" name="submit" value="login now" class="btn">
          <p>don't have an account? <a href="student_register.php">register now</a></p>
 
       </form>
 
    </div>
-   <script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
+   <script src="https://code.jquery.com/jquery-3.6.4.js" integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E="
+      crossorigin="anonymous"></script>
    <script src="js/script.js"></script>
-   
+
 </body>
 
 </html>

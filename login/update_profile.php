@@ -83,7 +83,7 @@ $username = $_SESSION['username'];
          </div>
          
          <input type="submit" value="update profile" name="update_profile" class="btn">
-         <a href="student_dashboard.php" class="delete-btn">go back</a>
+         <a href="../index.php" class="delete-btn">go back</a>
       </form>
 
    </div>

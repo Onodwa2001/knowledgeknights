@@ -327,16 +327,13 @@ p.error-message{
 
 .column a:hover {
    background-color: #555;
+   transition: 0.5s;
 }
 
 .column a.active {
    background-color: var(--blue);
 }
 
-
-/*Tutor registration*/
-
-/*Tutor registration*/
 
 
 
