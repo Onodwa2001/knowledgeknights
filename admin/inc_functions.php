@@ -57,17 +57,19 @@ function updateAlert($query)
 
 function applicationAcceptedAlert($query)
 {
-   $username = $_SESSION['username'];   
-
+  
+   $username = $_SESSION['username'];
    if ($query) {
+      
       ?>
+      
       <script>
          swal({
             title: "Success",
             text: "Your application has been approved",
             icon: "success",
          }).then(function () {
-            window.location.href = 'http://localhost/tutor/admin/index.php';
+            window.location.href = "http://localhost/Projects/knowledgeknights/admin/index.php?id=" . $username;
          });
       </script>
 
@@ -77,24 +79,21 @@ function applicationAcceptedAlert($query)
 }
 function applicationRejectedAlert()
 {
-   
+   ?>
+   <script>
+      swal({
+         title: "Success",
+         text: "Your application has been rejected",
+         icon: "success",
+      }).then(function () {
+         window.location = "index.php";
+      });
 
-   
-      ?>
-      <script>
-         swal({
-            title: "Success",
-            text: "Your application has been rejected",
-            icon: "success",
-         }).then(function () {
-            window.location = "index.php";
-         });
+   </script>
 
-      </script>
+   <?php
 
-      <?php
-
-   }
+}
 
 function deleteAdminAlert($query)
 {
@@ -105,6 +104,71 @@ function deleteAdminAlert($query)
          swal({
             title: "Success",
             text: "Admin has been successfully deleted",
+            icon: "success",
+         }).then(function () {
+            window.location = "index.php";
+         });
+
+      </script>
+
+      <?php
+
+   } else {
+
+      ?>
+      <script>
+         swal({
+            title: "Failed",
+            text: "Data not inserted",
+            icon: "error",
+         });
+      </script>
+      <?php
+
+   }
+}
+
+function deleteTutorAlert($query)
+{
+
+   if ($query) {
+      ?>
+      <script>
+         swal({
+            title: "Success",
+            text: "Tutor has been successfully deleted",
+            icon: "success",
+         }).then(function () {
+            window.location = "index.php";
+         });
+
+      </script>
+
+      <?php
+
+   } else {
+
+      ?>
+      <script>
+         swal({
+            title: "Failed",
+            text: "Data not inserted",
+            icon: "error",
+         });
+      </script>
+      <?php
+
+   }
+}
+function deleteStudentAlert($query)
+{
+
+   if ($query) {
+      ?>
+      <script>
+         swal({
+            title: "Success",
+            text: "Student has been successfully deleted",
             icon: "success",
          }).then(function () {
             window.location = "index.php";
@@ -229,7 +293,45 @@ function deleteAdmin($conn)
    }
 }
 
+function deleteStudent($conn)
+{
 
+   $username = mysqli_real_escape_string($conn, $_POST['username']);
+
+   $deleteStudent = "DELETE FROM users WHERE username = '$username'";
+
+   $deleteStudent1 = "DELETE FROM student WHERE username = '$username'";
+
+   $deleteQuery = mysqli_query($conn, $deleteStudent);
+
+   $deleteQuery1 = mysqli_query($conn, $deleteStudent1);
+
+
+
+   if ($deleteQuery === TRUE && $deleteQuery1 === TRUE) {
+
+      deleteAdminAlert($deleteQuery);
+
+   } else {
+      echo "Error deleting data: " . $conn->error;
+   }
+}
+
+function selectGrade($conn)
+{
+   $query = "SELECT * FROM grade";
+   $result = $conn->query($query);
+
+   if ($query) {
+      foreach ($result as $row) {
+         ?>
+         <option value="<?= $row['gradeID']; ?>">
+            <?= $row['grade']; ?>
+         </option>
+         <?php
+      }
+   }
+}
 function deleteTutor($conn)
 {
 
@@ -243,6 +345,9 @@ function deleteTutor($conn)
 
    $deleteTutor3 = "DELETE FROM assign_subject_tutor WHERE username = '$username'";
 
+   
+   $deleteTutor4 = "DELETE FROM payment WHERE tutorUsername = '$username'";
+
    $deleteQuery = mysqli_query($conn, $deleteTutor);
 
    $deleteQuery1 = mysqli_query($conn, $deleteTutor1);
@@ -251,16 +356,19 @@ function deleteTutor($conn)
 
    $deleteQuery3 = mysqli_query($conn, $deleteTutor3);
 
+   $deleteQuery4 = mysqli_query($conn, $deleteTutor4);
 
 
-   if ($deleteQuery === TRUE && $deleteQuery1 === TRUE && $deleteQuery2 === TRUE && $deleteQuery3 === TRUE) {
 
-      deleteAdminAlert($deleteQuery);
+   if ($deleteQuery === TRUE && $deleteQuery1 === TRUE && $deleteQuery2 === TRUE && $deleteQuery3 === TRUE && $deleteQuery4 === TRUE) {
+
+      deleteTutorAlert($deleteQuery);
 
    } else {
       echo "Error deleting data: " . $conn->error;
    }
 }
+
 
 function updateAdminDetails($conn)
 {
@@ -288,6 +396,94 @@ function updateAdminDetails($conn)
 
    }
 }
+function updateStudentPassword($conn)
+{
+
+   $username = mysqli_real_escape_string($conn, $_POST['username']);
+   $update_pass = mysqli_real_escape_string($conn, ($_POST['password']));
+   $confirm_pass = mysqli_real_escape_string($conn, ($_POST['cpassword']));
+
+   $hashPassword = password_hash($confirm_pass, PASSWORD_DEFAULT);
+
+   if (!empty($update_pass) || !empty($confirm_pass)) {
+      if ($update_pass != $confirm_pass) {
+         $error = 'Invalid password';
+         header("location: index.php?error=$error");
+         die();
+      } else {
+
+         $update_pass_query = ("UPDATE `users` SET password = '$hashPassword' WHERE username = '$username'") or die('query failed');
+
+         $query = mysqli_query($conn, $update_pass_query);
+
+         updateAlert($query);
+
+      }
+   }
+
+}
+
+function updateStudentProfileImage($conn)
+{
+   $username = mysqli_real_escape_string($conn, $_POST['username']);
+
+   $update_image = $_FILES['update_image']['name'];
+   $update_image_size = $_FILES['update_image']['size'];
+   $update_image_tmp_name = $_FILES['update_image']['tmp_name'];
+   $update_image_folder = 'uploaded_img/' . $update_image;
+
+   if (!empty($update_image)) {
+      if ($update_image_size > 2000000) {
+         $error = 'Image is too large';
+         header("location: index.php?error=$error");
+         die();
+      } else {
+         $image_update_query = mysqli_query($conn, "UPDATE `users` SET image = '$update_image' WHERE username = '$username'") or die('query failed');
+         if ($image_update_query) {
+            move_uploaded_file($update_image_tmp_name, $update_image_folder);
+            updateAlert($image_update_query);
+         }
+
+      }
+   }
+
+}
+function updateStudentDetails($conn)
+{
+
+   $username = mysqli_real_escape_string($conn, $_POST['username']);
+   $update_email = mysqli_real_escape_string($conn, $_POST['email']);
+   $update_firstname = mysqli_real_escape_string($conn, $_POST['firstname']);
+   $update_lastname = mysqli_real_escape_string($conn, $_POST['lastname']);
+   $update_dob = mysqli_real_escape_string($conn, $_POST['dob']);
+   $update_grade = mysqli_real_escape_string($conn, $_POST['grade']);
+
+
+   if (!filter_var($update_email, FILTER_VALIDATE_EMAIL)) {
+      $error = 'Invalid email';
+      header("location: index.php?error=$error");
+      die();
+   } elseif ((!preg_match("/^[a-zA-Z-' ]*$/", $update_firstname)) || (!preg_match("/^[a-zA-Z-' ]*$/", $update_lastname))) {
+      $error = 'Invalid name';
+      header("location: index.php?error=$error");
+      die();
+   } else {
+      $update = ("UPDATE `users` SET  firstName = '$update_firstname' , lastName = '$update_lastname'  , email = '$update_email', dateOfBirth = '$update_dob' WHERE username = '$username'") or die('query failed');
+      $update1 = ("UPDATE `student` SET  gradeID = '$update_grade' WHERE username = '$username'") or die('query failed');
+
+      $updateQuery = mysqli_query($conn, $update);
+      $updateQuery1 = mysqli_query($conn, $update1);
+
+      if ($updateQuery === TRUE && $updateQuery1 === TRUE) {
+
+         updateAlert($updateQuery);
+
+      } else {
+         echo "Error deleting data: " . $conn->error;
+      }
+
+   }
+}
 
 
 function updateAdminPassword($conn)
@@ -299,7 +495,7 @@ function updateAdminPassword($conn)
 
    $hashPassword = password_hash($confirm_pass, PASSWORD_DEFAULT);
 
-   if (!empty($update_pass)  || !empty($confirm_pass)) {
+   if (!empty($update_pass) || !empty($confirm_pass)) {
       if ($update_pass != $confirm_pass) {
          $error = 'Invalid password';
          header("location: index.php?error=$error");
@@ -350,7 +546,6 @@ function updateAdminProfileImage($conn)
 
 function updateTutorDetails($conn)
 {
-
    $username = mysqli_real_escape_string($conn, $_POST['username']);
    $firstname = mysqli_real_escape_string($conn, $_POST['firstname']);
    $lastname = mysqli_real_escape_string($conn, $_POST['lastname']);
@@ -363,8 +558,6 @@ function updateTutorDetails($conn)
    $town = mysqli_real_escape_string($conn, $_POST['town']);
    $city = mysqli_real_escape_string($conn, $_POST['city']);
    $postalCode = mysqli_real_escape_string($conn, $_POST['postal']);
-   
-   /*$overallRating = 0.0;*/
    $hourlyRate = mysqli_real_escape_string($conn, $_POST['hourlyRate']);
    $yearsOfExperience = mysqli_real_escape_string($conn, $_POST['teachingExperience']);
 
@@ -376,42 +569,46 @@ function updateTutorDetails($conn)
       $error = 'Invalid name';
       header("location: index.php?error=$error");
       die();
-   } elseif (strlen($phoneNo) < 10 || strlen($phoneNo) > 10 ) {
+   } elseif (strlen($phoneNo) < 10 || strlen($phoneNo) > 10) {
       $error = "Invalid phone number format";
       header("location: index.php?error=$error");
       die();
-   }
-   
-   else {
-
-      $username = mysqli_real_escape_string($conn, $_POST['username']);
-
-      $updateTutor = ("UPDATE `users` SET  firstName = '$firstname' , lastName = '$lastname'  , email = '$email', dateOfBirth = '$DOB' WHERE username = '$username'") or die('query failed');
-   
-      $updateTutor1 = ("UPDATE `tutor` SET  phoneNumber = '$phoneNo' , hourlyRate = '$hourlyRate'  , yearsOfExperience = '$yearsOfExperience' WHERE username = '$username'") or die('query failed');
-
-      $updateTutor2 = ("UPDATE `address` SET  streetNumber = '$streetNumber' , streetName = '$streetName'  , region = '$region', town = '$town', city = '$city' ,postalCode = '$postalCode'  WHERE username = '$username'") or die('query failed');
-   
-      $updateQuery  = mysqli_query($conn, $updateTutor);
-   
-      $updateQuery1 = mysqli_query($conn, $updateTutor1);
-
-      $updateQuery2  = mysqli_query($conn, $updateTutor2);
-   
-   
-   
-      if ($updateQuery === TRUE && $updateQuery1 === TRUE && $updateQuery2 === TRUE) {
-   
-         updateAlert($updateQuery);
-   
-      } else {
-         echo "Error deleting data: " . $conn->error;
-      }
+   } else {
 
       
 
+      $updateTutor = ("UPDATE `users` SET  firstName = '$firstname' , lastName = '$lastname'  , email = '$email', dateOfBirth = '$DOB' WHERE username = '$username'") or die('query failed');
+
+      $updateTutor1 = ("UPDATE `tutor` SET  phoneNumber = '$phoneNo' , hourlyRate = '$hourlyRate' , email = '$email'  , yearsOfExperience = '$yearsOfExperience' WHERE username = '$username'") or die('query failed');
+
+      $updateTutor2 = ("UPDATE `address` SET  streetNumber = '$streetNumber' , streetName = '$streetName'  , region = '$region', town = '$town', city = '$city' ,postalCode = '$postalCode'  WHERE username = '$username'") or die('query failed');
+
+      $updateTutor3 = ("UPDATE `payment` SET  email = '$email' WHERE tutorUsername = '$username'") or die('query failed');
+
+      $updateQuery = mysqli_query($conn, $updateTutor);
+
+      $updateQuery1 = mysqli_query($conn, $updateTutor1);
+
+      $updateQuery2 = mysqli_query($conn, $updateTutor2);
+
+      $updateQuery3 = mysqli_query($conn, $updateTutor3);
+
+
+
+      if ($updateQuery === TRUE && $updateQuery1 === TRUE && $updateQuery2 === TRUE && $updateQuery3 === TRUE) {
+
+         updateAlert($updateQuery);
+
+      } else {
+         echo "Error updating data: " . $conn->error;
+      }
+
+
+
    }
 }
+
+
 
 
 function updateTutorPassword($conn)
@@ -423,7 +620,7 @@ function updateTutorPassword($conn)
 
    $hashPassword = password_hash($confirm_pass, PASSWORD_DEFAULT);
 
-   if (!empty($update_pass)  || !empty($confirm_pass)) {
+   if (!empty($update_pass) || !empty($confirm_pass)) {
       if ($update_pass != $confirm_pass) {
          $error = 'Invalid password';
          header("location: index.php?error=$error");

@@ -56,7 +56,7 @@ if (isset($_POST['submit'])) {
                             $newPassword = password_hash($pass, PASSWORD_DEFAULT);
                             mysqli_stmt_bind_param($stmt, 'ssss', $newPassword , $token, $expiryDate, $email);
                             if(mysqli_stmt_execute($stmt)){
-                                // redirect to login
+                                
                                $msg = 'password successfully reset';
                              
                                header("location: ../login.php?msg=$msg");

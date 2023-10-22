@@ -12,7 +12,7 @@ function updateAlert($query)
             text: "Information has been successfully updated",
             icon: "success",
          }).then(function () {
-            window.location = "http://localhost/tutor/index.php?id=" . $username;
+            window.location = "http://localhost/Projects/knowledgeknights/index.php?id=".$username;
          });
 
       </script>
@@ -21,11 +21,10 @@ function updateAlert($query)
 
    }
 }
-
 function paymentAlert($query)
 {
    $username = $_SESSION['username'];
-   
+
    if ($query) {
       ?>
       <script>
@@ -35,7 +34,7 @@ function paymentAlert($query)
             icon: "success",
          }).then(function () {
             let id = '<?php echo $username; ?>';
-            window.location.href = "http://localhost/tutor/index.php?id=" + id;
+            window.location.href = "http://localhost/Projects/knowledgeknights/index.php?id=" + id;
          });
       </script>
 
@@ -43,9 +42,6 @@ function paymentAlert($query)
 
    }
 }
-
-
-
 function insertAlert($query)
 {
 
@@ -177,7 +173,7 @@ function updateProfileImage($conn, $username)
          $image_update_query = mysqli_query($conn, "UPDATE `users` SET image = '$update_image' WHERE username = '$username'") or die('query failed');
          if ($image_update_query) {
             move_uploaded_file($update_image_tmp_name, $update_image_folder);
-            updateAlert($$image_update_query);
+            updateAlert($image_update_query);
          }
 
       }
@@ -202,6 +198,8 @@ function registerStudent($conn)
    $userType = "Student";
    $verifiedStatus = "Not Verified";
 
+   $studentID = mt_rand(1000000, 9999999);
+   $grade = $_POST['grade'];
 
    $image = $_FILES['image']['name'];
    $image_size = $_FILES['image']['size'];
@@ -209,7 +207,7 @@ function registerStudent($conn)
    $image_folder = 'uploaded_img/' . $image;
 
    $encpass = password_hash($pass, PASSWORD_BCRYPT);
-   
+
 
    $uppercase = !preg_match('@[A-Z]@', $pass);
    $lowercase = !preg_match('@[a-z]@', $pass);
@@ -245,18 +243,33 @@ function registerStudent($conn)
       header("location: student_register.php?error=$error");
       die();
    } else {
-      $insert = ("INSERT INTO users (username, password,firstName, lastName, dateOfBirth , email,image, verifiedStatus, userType) 
+      $insertUser = ("INSERT INTO users (username, password,firstName, lastName, dateOfBirth , email,image, verifiedStatus, userType) 
       values('$username','$encpass','$firstname','$lastname', '$DOB', '$email' , '$image' , '$verifiedStatus' , '$userType')") or die('query failed');
-      $query = mysqli_query($conn, $insert);
 
-      if ($query) {
-         move_uploaded_file($image_tmp_name, $image_folder);
+      $query = mysqli_query($conn, $insertUser);
 
-         insertAlert($query);
+      if ($query == 1) {
+
+         foreach ($grade as $gradeList) {
+
+            $insertStudent = "INSERT INTO student (studentID, username,gradeID) 
+            values('$studentID','$username','$gradeList')";
+
+            $query = mysqli_query($conn, $insertStudent);
+
+         }
+
+         if ($query == 1) {
+            move_uploaded_file($image_tmp_name, $image_folder);
+            insertAlert($query);
+            die();
+         }
       }
+
    }
 }
 /*STUDENT_REGISTER END*/
+
 
 /*TUTOR REGISTER START*/
 function registerTutor($conn)
@@ -280,7 +293,7 @@ function registerTutor($conn)
    $yearsOfExperience = mysqli_real_escape_string($conn, $_POST['teachingExperience']);
    $userType = "Tutor";
    $verifiedStatus = "Not Verified";
-   $isVerified = "Not Verified";
+   $isVerified = 0;
 
    $subjects = $_POST['subjects'];
 
@@ -305,8 +318,6 @@ function registerTutor($conn)
    $whiteSpaces = preg_match("/\s/", $pass);
    $select = mysqli_query($conn, "SELECT * FROM `users` WHERE email = '$email' AND password = '$pass'") or die('query failed');
 
-   /*$select = mysqli_query($conn, "SELECT * FROM `users`,`tutor` WHERE users.userID = tutor.userID") or die('query failed');*/
-
    if (mysqli_num_rows($select) > 0) {
       $error = 'user already exist';
       header("location: tutor_register.php?error=$error");
@@ -315,7 +326,7 @@ function registerTutor($conn)
       $error = 'confirm password not matched!';
       header("location: tutor_register.php?error=$error");
       die();
-      
+
 
    } elseif (strlen($pass) < 8 || $uppercase || $lowercase || $number || $specialChars || $whiteSpaces) {
       $error = "Invalid Password";
@@ -338,20 +349,17 @@ function registerTutor($conn)
       $error = "Invalid field format";
       header("location: tutor_register.php?error=$error");
       die();
-   }elseif (strlen($phoneNo) < 10 || strlen($phoneNo) > 10 ) {
+   } elseif (strlen($phoneNo) < 10 || strlen($phoneNo) > 10) {
       $error = "Invalid phone number format";
       header("location: tutor_register.php?error=$error");
       die();
-   } 
-   
-   
-   else {
+   } else {
 
       $sqlUsers = "INSERT INTO users (username, password,firstName, lastName, dateOfBirth , email,image, verifiedStatus, userType) 
       values('$username','$encpass','$firstname','$lastname', '$DOB', '$email' , '$image' , '$verifiedStatus' , '$userType')";
 
-      $sqlTutor = "INSERT INTO tutor (tutorID, username, phoneNumber , yearsOfExperience, hourlyRate, qualification, isVerified) 
-      values('$tutorID','$username','$phoneNo','$yearsOfExperience' ,'$hourlyRate', '$document' , '$isVerified')";
+      $sqlTutor = "INSERT INTO tutor (tutorID, username, phoneNumber , yearsOfExperience, email, hourlyRate, qualification, isVerified) 
+      values('$tutorID','$username','$phoneNo','$yearsOfExperience','$email' ,'$hourlyRate', '$document' , '$isVerified')";
 
       $sqlAddress = "INSERT INTO address(addressID,username, streetNumber,streetName, region , town , city, postalCode)
 values('$addressID','$username','$streetNumber','$streetName','$region' , '$town' , '$city', '$postalCode')";
@@ -391,17 +399,28 @@ values('$addressID','$username','$streetNumber','$streetName','$region' , '$town
    }
 }
 
-function makePayment($amount, $conn) {
 
+function makePayment($amount, $conn)
+{
+   $email = $_SESSION['email'];
    $username = $_SESSION['username'];
-   $fee = 452.90;
+   $fee = 320.00;
+   $paymentMade = true;
 
-   $sql = "INSERT INTO payment(tutorUsername, amount, fee) VALUES('$username', '$amount', '$fee')";
-   $query = mysqli_query($conn, $sql);
-   
-   if (!$query) {
+   $sql = "INSERT INTO payment(tutorUsername, amount,email, fee,paymentMade) VALUES('$username', '$amount','$email', '$fee','$paymentMade')";
+   //$updatePayment = ("UPDATE `payment` SET paymentMade = $paymentMadeUpdate' WHERE tutorUsername = '$username'") or die('query failed');
+
+   $queryInsert = mysqli_query($conn, $sql);
+   //$queryUpdate = mysqli_query($conn, $updatePayment);
+
+
+
+   if (!$queryInsert) {
       echo 'error occurred while adding to connections ';
    } else {
-      paymentAlert($query);
+      paymentAlert($queryInsert);
    }
+
+   //updateAlert($queryUpdate);
+
 }

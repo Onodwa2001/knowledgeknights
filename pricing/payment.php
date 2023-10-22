@@ -2,7 +2,7 @@
 
     session_start();
 
-    $amount = 452.90;
+    $amount = 320.00;
 
     include('../login/inc_functions.php');
     include('../db_connect/connect.php');
@@ -14,7 +14,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Make Payment</title>
     <link rel="stylesheet" href="assets/css/payment.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js
@@ -95,8 +95,7 @@
                             <div class="row">
                                 <div class="col-lg-5 mb-lg-0 mb-3">
                                     <p class="h4 mb-0">Summary</p>
-                                    <p class="mb-0"><span class="fw-bold">Product:</span><span class="c-green">: Name of
-                                            product</span>
+                                    <p class="mb-0"><span class="fw-bold">Product:</span><span class="c-green">: Enterprise Package</span>
                                     </p>
                                     <p class="mb-0">
                                         <span class="fw-bold">Price:</span>

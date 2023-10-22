@@ -17,7 +17,7 @@ if (isset($_POST['rejectApplication'])) {
     $row = mysqli_fetch_assoc($select);
 
 
-    $url = "http://localhost/Projects/Admin-Dashboard%20latest%20version/index.php";
+    $url = "http://localhost/Projects/knowledgeknights/admin/index.php";
 
     $mail = new PHPMailer(true);
 

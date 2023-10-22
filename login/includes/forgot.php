@@ -22,7 +22,7 @@ if (isset($_POST['submit'])) {
        
         $created = time();
         $expires = strtotime("5 minutes", $created);
-        $url = "http://localhost/tutor/login/password_reset.php?token=$token&email=$email";
+        $url = "http://localhost/Projects/knowledgeknights/login/password_reset.php?token=$token&email=$email";
         
         $mail = new PHPMailer(true);
 

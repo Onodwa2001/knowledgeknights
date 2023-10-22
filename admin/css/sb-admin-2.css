@@ -201,6 +201,8 @@ figure {
 img {
   vertical-align: middle;
   border-style: none;
+  width: 60px;
+
 }
 
 svg {
@@ -1494,7 +1496,10 @@ pre code {
   vertical-align: top;
   border-top: 1px solid #e3e6f0;
 }
-
+td.flex {
+  display: flex;
+  gap: 5px;
+}
 .table thead th {
   vertical-align: bottom;
   border-bottom: 2px solid #e3e6f0;

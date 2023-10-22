@@ -33,19 +33,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Dashboard</title>
     <link rel="stylesheet" href="./stylesheets/style.css">
     <script src="https://kit.fontawesome.com/b85ed99f08.js" crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="stylesheets/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+
 
     <link rel="stylesheet" href="./login/css/student_dashboard.css">
 </head>
 <body>
     <header>
         <nav>
-            <div class="logo">Logo</div>
+            <div class="logo">
 
+                <img style="width:200px; margin-left:100px" src="login/uploaded_img/logo-no-background.png" alt="">
+            </div>
+           
             <ul>
                 <?php if (isset($_SESSION['username'])) { ?>
                     <li><a href="index.php?id=<?php echo $_GET['id']; ?>">Home</a></li>
@@ -107,11 +113,15 @@
 
                             </a>
 
-                            <a href="login/login.php" class="sub-menu-link">
+                            <a href="login/login.php" name="logout" class="sub-menu-link">
                                 <img src="login/images/logout.png" alt="">
-                                <form action="" method="POST">
+                                <p>Logout</p>
+                                <span>></span>
+
+                                <!-- <form action="" method="POST">
                                     <button name="logout">Logout</button>
-                                </form>
+                                    <span>></span>
+                                </form> -->
                             </a>
 
                             </div>

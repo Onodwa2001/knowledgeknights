@@ -58,6 +58,34 @@ include 'inc_functions.php';
          <input type="email" name="email" placeholder="enter email" class="box" required>
          <input type="text" placeholder="DOB" name="dob" class="box" onfocus="(this.type='date')" required>
 
+
+
+         <div class="grades">
+            <span class="input-heading" style="float:left">Select your grade:</span>
+            <br>
+            <select name="grade[]" class="box" id="grades" required>
+               <option disabled>Select grade</option>
+               <?php
+               $query = "SELECT * FROM grade";
+               $query_run = mysqli_query($conn, $query);
+
+               if (mysqli_num_rows($query_run) > 0) {
+                  foreach ($query_run as $row) {
+                     ?>
+                     <option value="<?= $row['gradeID']; ?>">
+                        <?= $row['grade']; ?>
+                     </option>
+                     <?php
+                  }
+               } else {
+                  ?>
+                  <option value="">No Record found</option>
+                  <?php
+               }
+               ?>
+            </select>
+         </div>
+
          <div class="password-container">
             <input type="password" name="password" id="id_password" placeholder="enter password" class="box" required>
             <i class="far fa-eye" id="togglePassword" style="margin-left: -30px;margin-top: 9px;cursor: pointer;"></i>
@@ -98,4 +126,3 @@ if (isset($_POST['submit'])) {
    registerStudent($conn);
 
 }
-
